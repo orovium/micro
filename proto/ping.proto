@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package server.ping;
+
+service Ping {
+    rpc Ping(PingRequest) returns (PingResponse) {}
+}
+
+message Header {
+    string key = 1;
+    string value = 2;
+}
+
+message RequestEnvelope {
+    string serviceMethod = 1;
+    fixed64 seq = 2;
+    repeated Header headers = 3;
+}
+
+message ResponseEnvelope {
+    string serviceMethod = 1;
+    fixed64 seq = 2;
+    string error = 3;
+    int64 httpCode = 4;
+}
+
+message PingRequest {
+    RequestEnvelope request = 1;
+    string message = 2;
+}
+
+message PingResponse {
+    ResponseEnvelope response = 1;
+    string message = 2;
+}
