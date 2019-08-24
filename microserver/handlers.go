@@ -20,5 +20,6 @@ func (p *Ping) Ping(ctx context.Context, req *proto.PingRequest, rsp *proto.Ping
 	}
 
 	rsp.Message = "pong"
+	GetLogger().Trace(ctx)
 	return nil
 }

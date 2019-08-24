@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/micro/go-micro"
 
 	"github.com/orovium/micro/microserver"
 )
+
+var log = microserver.GetLogger()
 
 func main() {
 	microserver.Init(nil)
@@ -17,7 +17,13 @@ func main() {
 		micro.Address(":8091"),
 	)
 
+	log.Trace("Something very low level.")
+	log.Debug("Useful debugging information.")
+	log.Info("Something noteworthy happened!")
+	log.Warn("You should probably take a look at this.")
+	log.Error("Something failed but I'm not quitting.")
+
 	if err := service.Run(); err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
 }

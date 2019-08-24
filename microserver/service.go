@@ -6,7 +6,6 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"github.com/jmoiron/sqlx"
 	micro "github.com/micro/go-micro"
-	"github.com/sirupsen/logrus"
 
 	proto "github.com/orovium/micro/proto"
 )
@@ -58,7 +57,7 @@ func GetService() (*Service, error) {
 
 // StartDefaultService returns an initialized service attached to the Ping handler.
 func StartDefaultService(options ...micro.Option) micro.Service {
-	logrus.Infof("Starting service with default handlers/middleware")
+	GetLogger().Infof("Starting service with default handlers/middleware")
 	service := startService(options...)
 
 	proto.RegisterPingHandler(service.Server(), new(Ping))
@@ -69,7 +68,7 @@ func StartDefaultService(options ...micro.Option) micro.Service {
 // StartService returns an initialized service with that is not attached to
 // any Handler.
 func StartService(options ...micro.Option) micro.Service {
-	logrus.Info("Starting service with no handlers/middleware attached")
+	GetLogger().Info("Starting service with no handlers/middleware attached")
 	return startService(options...)
 }
 
