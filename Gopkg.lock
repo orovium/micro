@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:8ed3bd6f13177e87ebd14c2ee3971f1ef264c87c1119f34bb6615f876642bf51"
+  name = "github.com/TV4/logrus-stackdriver-formatter"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "4580df31bae116b734c17ffd155492461d5facb6"
+  version = "v0.1.0"
+
+[[projects]]
   branch = "master"
   digest = "1:7a9140c806333a78122763d08ec6c0d7358c7fff1df8cfbb01881c5dc46e24e5"
   name = "github.com/armon/go-metrics"
@@ -27,6 +35,14 @@
   pruneopts = "UT"
   revision = "37e2e1f19306361e1fc152a1839f1236149cb4e4"
   version = "v0.1.0"
+
+[[projects]]
+  digest = "1:586ea76dbd0374d6fb649a91d70d652b7fe0ccffb8910a77468e7702e7901f3d"
+  name = "github.com/go-stack/stack"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2fee6af1a9795aafbe0253a0cfbdf668e1fb8a9a"
+  version = "v1.8.0"
 
 [[projects]]
   digest = "1:549b3770feea703d7cf55822b7b2e1b1afce35ea5034d9a1388249f3c65fbb98"
@@ -531,6 +547,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/TV4/logrus-stackdriver-formatter",
     "github.com/golang/protobuf/proto",
     "github.com/gomodule/redigo/redis",
     "github.com/jmoiron/sqlx",

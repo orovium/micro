@@ -2,7 +2,6 @@ package microserver
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	proto "github.com/orovium/micro/proto"
@@ -21,6 +20,5 @@ func (p *Ping) Ping(ctx context.Context, req *proto.PingRequest, rsp *proto.Ping
 	}
 
 	rsp.Message = "pong"
-	fmt.Printf("Context: %v", ctx)
 	return nil
 }

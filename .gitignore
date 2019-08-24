@@ -16,3 +16,6 @@ vendor
 
 # Auth files
 firebase*.json
+
+# Configuration files
+.env
