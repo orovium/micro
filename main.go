@@ -10,14 +10,21 @@ var log = microserver.GetLogger()
 
 func main() {
 
-	/* Attaching one option
+	/* //Attaching one option
 	serviceOptions := microserver.NewOptions()
 	serviceOptions.Logger(microserver.DefaultLoggerOptions())
 	*/
 
+	/* //Get default options
 	serviceOptions := microserver.NewOptions().WithDefaultOptions()
+	*/
 
+	/* // Initialize a service with custom options
 	microserver.Init(serviceOptions)
+	*/
+
+	// Initialize a service with default options attached
+	microserver.InitDefault()
 
 	service := microserver.StartDefaultService(
 		micro.Name("ping"),

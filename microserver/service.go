@@ -42,6 +42,16 @@ func Init(options *Options) error {
 	return err
 }
 
+// InitDefault returns a service with default options attached.
+// If there are another service already initilized, thows a
+// ServiceAlreadyInitilizedError erro
+func InitDefault() error {
+	options := NewOptions().WithDefaultOptions()
+
+	return Init(options)
+
+}
+
 func newService(options *Options) (*Service, error) {
 	service := &Service{
 		options: options,
