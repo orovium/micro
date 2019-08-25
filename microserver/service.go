@@ -1,6 +1,7 @@
 package microserver
 
 import (
+	"database/sql"
 	"sync"
 
 	"github.com/gomodule/redigo/redis"
@@ -19,7 +20,8 @@ var instance *Service
 // Service models the service and upstream needed capabilities
 type Service struct {
 	options   *Options
-	db        *sqlx.DB
+	db        *sql.DB
+	dbx       *sqlx.DB
 	redisPool *redis.Pool
 	service   *micro.Service
 	log       *logrus.Logger
@@ -68,7 +70,13 @@ func (s *Service) init() error {
 		return nil
 	}
 
+	var err error
+
 	s.initLogger()
+	err = s.initDB()
+	if err != nil && !IsNoDatabaseOptionsError(err) {
+		GetLogger().WithError(err).Fatal("Can't connect to provided database")
+	}
 	return nil
 }
 
@@ -84,6 +92,15 @@ func GetService() (*Service, error) {
 	}
 
 	return instance, nil
+}
+
+// GetDB returns the main sql database connection.
+func (s *Service) GetDB() (*sql.DB, error) {
+	if s.db == nil {
+		return nil, DatabaseNotYetInitializeError()
+	}
+
+	return s.db, nil
 }
 
 // StartDefaultService returns an initialized service attached to the Ping handler.

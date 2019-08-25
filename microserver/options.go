@@ -2,6 +2,7 @@ package microserver
 
 import (
 	"context"
+	"database/sql"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -57,6 +58,8 @@ type DBOptions struct {
 	SSLMode      string
 	MainDatabase string
 	Password     string
+
+	db *sql.DB
 }
 
 const (
@@ -71,6 +74,11 @@ const (
 // DefaultDBOptions initilizes and returns a DBOptions struct with default values.
 // This values must be environment varialbles
 func DefaultDBOptions() *DBOptions {
+
+	if !databaseEnvIsSetting() {
+		return nil
+	}
+
 	return &DBOptions{
 		MigrationDir: os.Getenv(migrationDirKey),
 		Host:         os.Getenv(databaseHostKey),
@@ -79,6 +87,26 @@ func DefaultDBOptions() *DBOptions {
 		MainDatabase: os.Getenv(mainDatabaseKey),
 		Password:     os.Getenv(databasePasswordKey),
 	}
+}
+
+func databaseEnvIsSetting() bool {
+	return envExist(migrationDirKey) &&
+		envExist(databaseHostKey) &&
+		envExist(databaseUserKey) &&
+		envExist(databaseSSLModeKey) &&
+		envExist(mainDatabaseKey) &&
+		envExist(databasePasswordKey)
+}
+
+// WithInjectedDB can be used to database dependency injection
+func (dbo *DBOptions) WithInjectedDB(db *sql.DB) *DBOptions {
+	dbo.db = db
+	return dbo
+}
+
+// GetInjectedDB returns the injected database
+func (dbo *DBOptions) GetInjectedDB() *sql.DB {
+	return dbo.db
 }
 
 // RedisOptions stores redis database configuration.

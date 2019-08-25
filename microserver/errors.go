@@ -38,3 +38,41 @@ func (e *DatabaseNotYetInitialize) Error() string {
 func DatabaseNotYetInitializeError() error {
 	return &DatabaseNotYetInitialize{}
 }
+
+// DatabaseAlreadyInitialize is used when user try to initialize the database and
+//it is already initialized
+type DatabaseAlreadyInitialize struct{}
+
+func (e *DatabaseAlreadyInitialize) Error() string {
+	return "Error initializing service. Database is already initialized"
+}
+
+// DatabaseAlreadyInitializeError returns a new DatabaseAlreadyInitialize error
+func DatabaseAlreadyInitializeError() error {
+	return &DatabaseAlreadyInitialize{}
+}
+
+// IsDatabaseAlreadyInitializeError checks if the error is a DatabaseAlreadyInitialize error
+func IsDatabaseAlreadyInitializeError(err error) bool {
+	_, ok := err.(*DatabaseAlreadyInitialize)
+	return ok
+}
+
+// NoDatabaseOptions is used when user try to get the database and it is
+// not initialized
+type NoDatabaseOptions struct{}
+
+func (e *NoDatabaseOptions) Error() string {
+	return "Cant't initilize Database. Database config is not supplied"
+}
+
+// NoDatabaseOptionsError returns a new NoDatabaseOptionsError error
+func NoDatabaseOptionsError() error {
+	return &NoDatabaseOptions{}
+}
+
+// IsNoDatabaseOptionsError checks if the error is a NoDatabaseOptions error
+func IsNoDatabaseOptionsError(err error) bool {
+	_, ok := err.(*NoDatabaseOptions)
+	return ok
+}
