@@ -26,6 +26,7 @@ func NewOptions() *Options {
 
 // DB set the service database configuration
 func (o *Options) DB(dbOptions *DBOptions) {
+	GetLogger().Trace("DB options on DB() :")
 	o.db = dbOptions
 }
 
@@ -63,7 +64,7 @@ type DBOptions struct {
 }
 
 const (
-	migrationDirKey     = "./db" //carefull: Will be relative from calling file.
+	migrationDirKey     = "DATABASE_MIGRATIONS_DIR" //carefull: Will be relative from calling file.
 	databaseHostKey     = "DATABASE_HOST"
 	databasePasswordKey = "DATABASE_PASSWORD"
 	databaseUserKey     = "DATABASE_USER"

@@ -34,4 +34,5 @@ func main() {
 	}
 
 	fmt.Println(rsp.Message)
+	fmt.Println(rsp.Status)
 }

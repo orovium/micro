@@ -29,7 +29,23 @@ message PingRequest {
     string message = 2;
 }
 
+message ServiceStatus {
+    DBStats DBStats = 1;
+}
+
+message DBStats {
+    int64 maxOpenConnections = 1;
+    int64 openConnections = 2;
+    int64 inUse = 3;
+    int64 idle = 4;
+    int64 waitCount = 5;
+    int64 waitDuration = 6;
+    int64 maxIdleClosed = 7;
+    int64 maxLifetimeClosed = 8;
+}
+
 message PingResponse {
     ResponseEnvelope response = 1;
     string message = 2;
+    ServiceStatus status = 3;
 }

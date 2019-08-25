@@ -63,14 +63,16 @@ func connectToDBServer(options *DBOptions) (db *sql.DB, err error) {
 	connectionParams := getServerConnectionString(options)
 	ret := retrier.New(retrier.ExponentialBackoff(5, 1*time.Second), retrier.DefaultClassifier{})
 	ret.Run(func() error {
-		db, err = sql.Open("postgres", connectionParams) // gorm checks Ping on Open
+		db, err = sql.Open("postgres", connectionParams)
 		if err != nil {
 			return err
 		}
-		return db.Ping()
+		err = db.Ping()
+		return err
 	})
-
-	GetLogger().WithError(err).Warn("Can't stablish connection to database server")
+	if err == nil {
+		GetLogger().Infof("database connection stablished")
+	}
 	return
 }
 

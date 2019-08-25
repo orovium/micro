@@ -49,9 +49,7 @@ func Init(options *Options) error {
 // ServiceAlreadyInitilizedError erro
 func InitDefault() error {
 	options := NewOptions().WithDefaultOptions()
-
 	return Init(options)
-
 }
 
 func newService(options *Options) (*Service, error) {
@@ -101,6 +99,11 @@ func (s *Service) GetDB() (*sql.DB, error) {
 	}
 
 	return s.db, nil
+}
+
+// IsUsingDB returns if the service has a functional database.
+func (s *Service) IsUsingDB() bool {
+	return s.db != nil
 }
 
 // StartDefaultService returns an initialized service attached to the Ping handler.
