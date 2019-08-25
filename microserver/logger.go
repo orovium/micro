@@ -1,36 +1,23 @@
 package microserver
 
 import (
-	"os"
-	"strings"
-
 	stackdriver "github.com/TV4/logrus-stackdriver-formatter"
 	"github.com/sirupsen/logrus"
 )
 
-const envKey = "ENV"
-
 var log = logrus.New()
 
-func init() {
-	env := strings.ToLower(os.Getenv(envKey))
+// setLogger is called by the service. It adds the logger if their option is sets
+// when you initilizes the service.
+func setLogger(options *LoggerOptions) {
 
-	switch env {
-	case "local":
-		localLogging()
-	case "dev":
-		nonProdServerLogging()
-	case "pre":
-		nonProdServerLogging()
-	case "prod":
-		nonProdServerLogging()
-
-	default:
-		nonProdServerLogging()
-		log.Warn("Can't get environment. Setting to non production server")
+	if options.Format != nil {
+		log.Formatter = options.Format
 	}
 
-	log.Infof("Start to loggin at %v with %v level", env, log.GetLevel())
+	log.Level = options.Level
+
+	log.Infof("Start to loggin with %v config", options.Env)
 }
 
 // GetLogger returns a logger ready to log to stackdriver
@@ -38,23 +25,36 @@ func GetLogger() *logrus.Logger {
 	return log
 }
 
-func localLogging() {
-	log.SetLevel(logrus.TraceLevel)
+func localLogging() (logrus.Level, logrus.Formatter) {
+	return logrus.TraceLevel, nil
 }
 
-func nonProdServerLogging() {
-	setLoggerForServer()
-	log.Level = logrus.DebugLevel
+func nonProdServerLogging() (logrus.Level, logrus.Formatter) {
+	return logrus.DebugLevel, getLoggerForServer()
 }
 
-func prodServerLogging() {
-	setLoggerForServer()
-	log.SetLevel(logrus.InfoLevel)
+func prodServerLogging() (logrus.Level, logrus.Formatter) {
+	return logrus.InfoLevel, getLoggerForServer()
 }
 
-func setLoggerForServer() {
-	log.Formatter = stackdriver.NewFormatter(
+func getLoggerForServer() logrus.Formatter {
+	return stackdriver.NewFormatter(
 		stackdriver.WithService("your-service"),
 		stackdriver.WithVersion("v0.1.0"),
 	)
+}
+
+func getDefaultLoggerConfByEnv(env string) (logrus.Level, logrus.Formatter) {
+	switch env {
+	case "local":
+		return localLogging()
+	case "dev":
+		return nonProdServerLogging()
+	case "pre":
+		return nonProdServerLogging()
+	case "prod":
+		return prodServerLogging()
+	}
+
+	return nonProdServerLogging()
 }

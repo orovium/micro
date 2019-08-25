@@ -6,6 +6,7 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"github.com/jmoiron/sqlx"
 	micro "github.com/micro/go-micro"
+	"github.com/sirupsen/logrus"
 
 	proto "github.com/orovium/micro/proto"
 )
@@ -21,29 +22,49 @@ type Service struct {
 	db        *sqlx.DB
 	redisPool *redis.Pool
 	service   *micro.Service
+	log       *logrus.Logger
 }
 
 // Init initializes a service if there are no other service initialized
 func Init(options *Options) error {
 	if instance != nil {
-		return ServiceNotYetInitializeError()
+		return ServiceAlreadyInitializeError()
 	}
+
+	var err error
 
 	onceService.Do(func() {
 
-		instance = newService(options)
+		instance, err = newService(options)
 
 	})
 
-	return nil
+	return err
 }
 
-func newService(options *Options) *Service {
+func newService(options *Options) (*Service, error) {
 	service := &Service{
 		options: options,
 	}
 
-	return service
+	service.init()
+
+	return service, nil
+}
+
+func (s *Service) init() error {
+	if s.options == nil {
+		log.Warn("Warning: Starting new service with no plugins")
+		return nil
+	}
+
+	s.initLogger()
+	return nil
+}
+
+func (s *Service) initLogger() {
+	setLogger(s.options.logger)
+	s.log = GetLogger()
 }
 
 // GetService returns the service if initialized.

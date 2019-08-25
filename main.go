@@ -9,7 +9,15 @@ import (
 var log = microserver.GetLogger()
 
 func main() {
-	microserver.Init(nil)
+
+	/* Attaching one option
+	serviceOptions := microserver.NewOptions()
+	serviceOptions.Logger(microserver.DefaultLoggerOptions())
+	*/
+
+	serviceOptions := microserver.NewOptions().WithDefaultOptions()
+
+	microserver.Init(serviceOptions)
 
 	service := microserver.StartDefaultService(
 		micro.Name("ping"),
