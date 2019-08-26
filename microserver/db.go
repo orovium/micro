@@ -55,8 +55,16 @@ func mustInitilizeDB(options *Options) bool {
 
 func initializeDBFromOptions(options *DBOptions) (db *sql.DB, dbx *sqlx.DB, err error) {
 	db, err = getDBFromOptions(options)
+	if err != nil {
+		return
+	}
 	dbx = sqlx.NewDb(db, pluginDatabaseDriver)
 	assertDBExists(dbx, options)
+	db, err = connectToDB(options)
+	if err != nil {
+		return
+	}
+	dbx = sqlx.NewDb(db, pluginDatabaseDriver)
 	return
 }
 
@@ -70,13 +78,13 @@ func getDBFromOptions(options *DBOptions) (db *sql.DB, err error) {
 	return
 }
 
-func assertDBExists(dbx *sqlx.DB, options *DBOptions) error {
+func assertDBExists(dbx *sqlx.DB, options *DBOptions) {
 	if dbExists(dbx, options) {
-		return nil
+		return
 	}
 	createDB(dbx, options)
 
-	return nil
+	return
 }
 
 func dbExists(dbx *sqlx.DB, options *DBOptions) bool {
@@ -103,7 +111,7 @@ func connectToDBServer(options *DBOptions) (db *sql.DB, err error) {
 		return err
 	})
 	if err == nil {
-		GetLogger().Infof("database connection stablished")
+		GetLogger().Info("database connection stablished")
 	}
 	return
 }
@@ -116,4 +124,19 @@ func getServerConnectionString(options *DBOptions) string {
 		options.SSLMode,
 		options.Host,
 	)
+}
+
+func connectToDB(options *DBOptions) (*sql.DB, error) {
+	connectionParams := getDBConnectionString(options)
+	db, err := sql.Open(pluginDatabaseDriver, connectionParams)
+	err = db.Ping()
+	if err != nil {
+		GetLogger().WithError(err).Warn("Error Opening mainDB")
+		return nil, err
+	}
+	return db, err
+}
+
+func getDBConnectionString(options *DBOptions) string {
+	return fmt.Sprintf("dbname=%v %v", options.MainDatabase, getServerConnectionString(options))
 }
