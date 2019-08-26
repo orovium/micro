@@ -33,6 +33,5 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println(rsp.Message)
-	fmt.Println(rsp.Status)
+	fmt.Println(rsp)
 }

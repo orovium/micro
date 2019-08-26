@@ -15,7 +15,7 @@ type Ping struct{}
 func (p *Ping) Ping(ctx context.Context, req *proto.PingRequest, rsp *proto.PingResponse) error {
 	rsp.Response = &proto.ResponseEnvelope{
 		ServiceMethod: http.MethodGet,
-		Seq:           1,
+		Seq:           req.Request.Seq,
 		Error:         "",
 		HttpCode:      http.StatusOK,
 	}

@@ -12,9 +12,10 @@ const envKey = "ENV"
 
 // Options store all service configuration options
 type Options struct {
-	db     *DBOptions
-	redis  *RedisOptions
-	logger *LoggerOptions
+	db       *DBOptions
+	redis    *RedisOptions
+	logger   *LoggerOptions
+	firebase *FirebaseOptions
 
 	Context context.Context
 }
@@ -145,5 +146,57 @@ func DefaultLoggerOptions() *LoggerOptions {
 		Env:    env,
 		Level:  level,
 		Format: format,
+	}
+}
+
+const (
+	firebaseBucketKey         = "FIREBASE_BUCKET"
+	firebaseBucketFileNameKey = "FIREBASE_BUCKET_FILE_NAME"
+	firebaseConfigPathKey     = "FIREBASE_CONFIG_PATH"
+)
+
+// FirebaseOptions stores firebase configurations to authorization/authentication
+type FirebaseOptions struct {
+	bucket     string
+	name       string
+	configPath string
+}
+
+// NewFirebaseOptions returns an emty FirebaseOptionsObject
+func NewFirebaseOptions() *FirebaseOptions {
+	return &FirebaseOptions{}
+}
+
+// FromFile fills the FirebaseObject with the path to the firebase.json config file.
+// You can rename the file to other.json or whatever you want, only be sure that
+// the path include the file name.
+func (fbo *FirebaseOptions) FromFile(path string) *FirebaseOptions {
+	fbo.configPath = path
+	return fbo
+}
+
+// FromBucket fills the FirebaseObject with the gclout storage bucket that stores
+// the firebase.json. If you save the file with other name, you can provide it
+// in the name parameter. In any other case, left it to blank string: ""
+func (fbo *FirebaseOptions) FromBucket(bucket string, name string) *FirebaseOptions {
+	fbo.bucket = bucket
+	fbo.name = name
+	return fbo
+}
+
+// DefaultFirebaseOptions returns a FirebaseOptions fills with the bucket/path
+// found on environment variables.
+func DefaultFirebaseOptions() *FirebaseOptions {
+	switch true {
+	case envExist(firebaseBucketKey):
+		bucket := os.Getenv(firebaseBucketKey)
+		name := os.Getenv(firebaseBucketFileNameKey)
+		return NewFirebaseOptions().FromBucket(bucket, name)
+	case envExist(firebaseConfigPathKey):
+		path := os.Getenv(firebaseConfigPathKey)
+		return NewFirebaseOptions().FromFile(path)
+
+	default:
+		return NewFirebaseOptions()
 	}
 }

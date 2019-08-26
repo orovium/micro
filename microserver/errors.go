@@ -76,3 +76,41 @@ func IsNoDatabaseOptionsError(err error) bool {
 	_, ok := err.(*NoDatabaseOptions)
 	return ok
 }
+
+// FirebaseNotAlreadyInitilialized is used when user try to get the firebase app and it is
+// not initialized
+type FirebaseNotAlreadyInitilialized struct{}
+
+func (e *FirebaseNotAlreadyInitilialized) Error() string {
+	return "Cant't initilize Database. Database config is not supplied"
+}
+
+// FirebaseNotAlreadyInitilializedError returns a new FirebaseNotAlreadyInitilializedError error
+func FirebaseNotAlreadyInitilializedError() error {
+	return &FirebaseNotAlreadyInitilialized{}
+}
+
+// IsFirebaseNotAlreadyInitilializedError checks if the error is a FirebaseNotAlreadyInitilialized error
+func IsFirebaseNotAlreadyInitilializedError(err error) bool {
+	_, ok := err.(*FirebaseNotAlreadyInitilialized)
+	return ok
+}
+
+// NoFirebaseOptions is used when user try to get the Firebase and it is
+// not initialized
+type NoFirebaseOptions struct{}
+
+func (e *NoFirebaseOptions) Error() string {
+	return "Cant't initilize Firebase. Firebase config is not supplied"
+}
+
+// NoFirebaseOptionsError returns a new NoFirebaseOptionsError error
+func NoFirebaseOptionsError() error {
+	return &NoFirebaseOptions{}
+}
+
+// IsNoFirebaseOptionsError checks if the error is a NoFirebaseOptions error
+func IsNoFirebaseOptionsError(err error) bool {
+	_, ok := err.(*NoFirebaseOptions)
+	return ok
+}

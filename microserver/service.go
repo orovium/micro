@@ -1,9 +1,12 @@
 package microserver
 
 import (
+	"context"
 	"database/sql"
 	"sync"
 
+	firebase "firebase.google.com/go"
+	"firebase.google.com/go/auth"
 	"github.com/gomodule/redigo/redis"
 	"github.com/jmoiron/sqlx"
 	micro "github.com/micro/go-micro"
@@ -25,6 +28,7 @@ type Service struct {
 	redisPool *redis.Pool
 	service   *micro.Service
 	log       *logrus.Logger
+	firebase  *firebase.App
 }
 
 // Init initializes a service if there are no other service initialized
@@ -75,6 +79,11 @@ func (s *Service) init() error {
 	if err != nil && !IsNoDatabaseOptionsError(err) {
 		GetLogger().WithError(err).Fatal("Can't connect to provided database")
 	}
+
+	err = s.initAuth()
+	if err != nil && !IsNoFirebaseOptionsError(err) {
+		GetLogger().WithError(err).Fatal("Can't connect to firebase auth system")
+	}
 	return nil
 }
 
@@ -104,6 +113,14 @@ func (s *Service) GetDB() (*sql.DB, error) {
 // IsUsingDB returns if the service has a functional database.
 func (s *Service) IsUsingDB() bool {
 	return s.db != nil
+}
+
+// GetAuthClient returns a instance of the attached
+func (s *Service) GetAuthClient() (*auth.Client, error) {
+	if s.firebase == nil {
+		return nil, FirebaseNotAlreadyInitilializedError()
+	}
+	return s.firebase.Auth(context.Background())
 }
 
 // StartDefaultService returns an initialized service attached to the Ping handler.
