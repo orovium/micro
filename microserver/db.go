@@ -6,8 +6,11 @@ import (
 	"time"
 
 	"github.com/eapache/go-resiliency/retrier"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" // Here we initializes the database
 )
+
+const pluginDatabaseDriver = "postgres"
 
 // GetDB returns the main sql database connection.
 func GetDB() (*sql.DB, error) {
@@ -40,7 +43,7 @@ func (s *Service) initDB() error {
 
 	var err error
 	onceDB.Do(func() {
-		s.db, err = getDBFromOptions(s.options.db)
+		s.db, s.dbx, err = initializeDBFromOptions(s.options.db)
 	})
 
 	return err
@@ -48,6 +51,13 @@ func (s *Service) initDB() error {
 
 func mustInitilizeDB(options *Options) bool {
 	return options.db != nil
+}
+
+func initializeDBFromOptions(options *DBOptions) (db *sql.DB, dbx *sqlx.DB, err error) {
+	db, err = getDBFromOptions(options)
+	dbx = sqlx.NewDb(db, pluginDatabaseDriver)
+	assertDBExists(dbx, options)
+	return
 }
 
 func getDBFromOptions(options *DBOptions) (db *sql.DB, err error) {
@@ -60,11 +70,32 @@ func getDBFromOptions(options *DBOptions) (db *sql.DB, err error) {
 	return
 }
 
+func assertDBExists(dbx *sqlx.DB, options *DBOptions) error {
+	if dbExists(dbx, options) {
+		return nil
+	}
+	createDB(dbx, options)
+
+	return nil
+}
+
+func dbExists(dbx *sqlx.DB, options *DBOptions) bool {
+	query := "SELECT true from pg_database WHERE datname=$1"
+	var exists bool
+	err := dbx.Get(&exists, query, options.MainDatabase)
+	return err == nil && exists
+}
+
+func createDB(dbx *sqlx.DB, options *DBOptions) {
+	query := fmt.Sprintf("CREATE DATABASE %v;", options.MainDatabase)
+	dbx.MustExec(query)
+}
+
 func connectToDBServer(options *DBOptions) (db *sql.DB, err error) {
 	connectionParams := getServerConnectionString(options)
 	ret := retrier.New(retrier.ExponentialBackoff(5, 1*time.Second), retrier.DefaultClassifier{})
 	ret.Run(func() error {
-		db, err = sql.Open("postgres", connectionParams)
+		db, err = sql.Open(pluginDatabaseDriver, connectionParams)
 		if err != nil {
 			return err
 		}
