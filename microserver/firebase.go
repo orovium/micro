@@ -46,7 +46,7 @@ func (s *Service) initAuth() error {
 }
 
 func mustInitilizeFirebase(options *Options) bool {
-	return options.db != nil
+	return options.firebase != nil
 }
 
 func (s *Service) getFirebaseCredentialsFromOptions() (credentials []byte) {
