@@ -110,6 +110,15 @@ func (s *Service) GetDB() (*sql.DB, error) {
 	return s.db, nil
 }
 
+// GetDBx returns the sqlx database connection wrapper.
+func (s *Service) GetDBx() (*sqlx.DB, error) {
+	if s.dbx == nil {
+		return nil, DatabaseNotYetInitializeError()
+	}
+
+	return s.dbx, nil
+}
+
 // IsUsingDB returns if the service has a functional database.
 func (s *Service) IsUsingDB() bool {
 	return s.db != nil

@@ -32,6 +32,26 @@ func GetDB() (*sql.DB, error) {
 	return db, err
 }
 
+// GetDBx returns the sqlx database connection wrapper.
+func GetDBx() (*sqlx.DB, error) {
+	service, err := GetService()
+	if err != nil {
+		GetLogger().
+			WithError(err).
+			Warn("Can't retrieve database. Does you call microserver.Init()??")
+		return nil, err
+	}
+
+	dbx, err := service.GetDBx()
+	if err != nil {
+		GetLogger().
+			WithError(err).
+			Warn("Can't retrieve database. Does you add a database options??")
+	}
+
+	return dbx, err
+}
+
 func (s *Service) initDB() error {
 	if !mustInitilizeDB(s.options) {
 		return NoDatabaseOptionsError()
