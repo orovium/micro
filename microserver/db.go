@@ -10,12 +10,13 @@ import (
 )
 
 // GetDB returns the main sql database connection.
-func GetDB() *sql.DB {
+func GetDB() (*sql.DB, error) {
 	service, err := GetService()
 	if err != nil {
 		GetLogger().
 			WithError(err).
 			Warn("Can't retrieve database. Does you call microserver.Init()??")
+		return nil, err
 	}
 
 	db, err := service.GetDB()
@@ -25,7 +26,7 @@ func GetDB() *sql.DB {
 			Warn("Can't retrieve database. Does you add a database options??")
 	}
 
-	return db
+	return db, err
 }
 
 func (s *Service) initDB() error {

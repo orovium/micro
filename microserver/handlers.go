@@ -22,19 +22,18 @@ func (p *Ping) Ping(ctx context.Context, req *proto.PingRequest, rsp *proto.Ping
 
 	rsp.Message = "pong"
 	GetLogger().Trace(ctx)
-	service, _ := GetService()
-	rsp.Status = getHealthStats(service)
+	rsp.Status = getHealthStats()
 	return nil
 }
 
-func getHealthStats(service *Service) *proto.ServiceStatus {
+func getHealthStats() *proto.ServiceStatus {
 	return &proto.ServiceStatus{
-		DBStats: getDBStats(service),
+		DBStats: getDBStats(),
 	}
 }
 
-func getDBStats(service *Service) *proto.DBStats {
-	db, err := service.GetDB()
+func getDBStats() *proto.DBStats {
+	db, err := GetDB()
 	if err != nil {
 		return &proto.DBStats{}
 	}

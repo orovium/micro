@@ -7,11 +7,32 @@ import (
 
 	"cloud.google.com/go/storage"
 	firebase "firebase.google.com/go"
+	"firebase.google.com/go/auth"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/api/option"
 )
 
 const defaultFirebaseConfigName = "firebase.json"
+
+// GetAuthClient returns the auth client attached to current service
+func GetAuthClient() (*auth.Client, error) {
+	service, err := GetService()
+	if err != nil {
+		GetLogger().
+			WithError(err).
+			Warn("Can't retrieve auth client. Does you call microserver.Init()??")
+		return nil, err
+	}
+
+	authClient, err := service.GetAuthClient()
+	if err != nil {
+		GetLogger().
+			WithError(err).
+			Warn("Can't retrieve auth client. Does you add a firebase options??")
+	}
+
+	return authClient, err
+}
 
 func (s *Service) initAuth() error {
 	if !mustInitilizeFirebase(s.options) {
