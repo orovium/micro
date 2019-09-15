@@ -1,4 +1,4 @@
-package microserver
+package server
 
 import (
 	stackdriver "github.com/TV4/logrus-stackdriver-formatter"
@@ -8,7 +8,7 @@ import (
 var log = logrus.New()
 
 // setLogger is called by the service. It adds the logger if their option is sets
-// when you initilizes the service.
+// when you initialize the service.
 func setLogger(options *LoggerOptions) {
 
 	if options.Format != nil {

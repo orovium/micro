@@ -6,7 +6,7 @@ import (
 
 	micro "github.com/micro/go-micro"
 
-	proto "github.com/orovium/micro/proto"
+	proto "orov.io/micro/proto"
 )
 
 func main() {

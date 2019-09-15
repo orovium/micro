@@ -1,4 +1,4 @@
-package microserver
+package server
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	micro "github.com/micro/go-micro"
 	"github.com/sirupsen/logrus"
 
-	proto "github.com/orovium/micro/proto"
+	proto "orov.io/micro/proto"
 )
 
 var onceService sync.Once

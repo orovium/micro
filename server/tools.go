@@ -1,4 +1,4 @@
-package microserver
+package server
 
 import "os"
 

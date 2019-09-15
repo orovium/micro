@@ -1,4 +1,4 @@
-package microserver
+package server
 
 // ServiceNotYetInitialize is used when user try to get the service and it is
 // not initialized

@@ -1,11 +1,12 @@
-package microserver
+package server
 
 import (
 	"context"
 	"database/sql"
 	"net/http"
 
-	proto "github.com/orovium/micro/proto"
+	proto "orov.io/micro/proto"
+
 )
 
 // Ping is the main entrypoint for this service

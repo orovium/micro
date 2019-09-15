@@ -3,10 +3,10 @@ package main
 import (
 	"github.com/micro/go-micro"
 
-	"github.com/orovium/micro/microserver"
+	"orov.io/micro/server"
 )
 
-var log = microserver.GetLogger()
+var log = server.GetLogger()
 
 func main() {
 
@@ -24,12 +24,12 @@ func main() {
 	*/
 
 	// Initialize a service with default options attached
-	microserver.InitDefault()
+	server.InitDefault()
 
-	service := microserver.StartDefaultService(
+	service := server.StartDefaultService(
 		micro.Name("ping"),
 		micro.Version("1.0.0"),
-		micro.Address(":8091"),
+		micro.Address(":8080"),
 	)
 
 	log.Trace("Something very low level.")
