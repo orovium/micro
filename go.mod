@@ -1,4 +1,4 @@
-module orov.io/micro
+module orovio/micro
 
 go 1.12
 
@@ -14,5 +14,6 @@ require (
 	github.com/lib/pq v1.2.0
 	github.com/micro/go-micro v1.10.0
 	github.com/sirupsen/logrus v1.4.2
+	golang.org/x/tools/gopls v0.1.5 // indirect
 	google.golang.org/api v0.8.0
 )

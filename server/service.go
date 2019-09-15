@@ -12,7 +12,7 @@ import (
 	micro "github.com/micro/go-micro"
 	"github.com/sirupsen/logrus"
 
-	proto "orov.io/micro/proto"
+	proto "orovio/micro/proto"
 )
 
 var onceService sync.Once

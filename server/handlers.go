@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"net/http"
 
-	proto "orov.io/micro/proto"
+	proto "orovio/micro/proto"
 
 )
 
